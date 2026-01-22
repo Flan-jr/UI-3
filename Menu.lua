@@ -897,7 +897,7 @@ local function CreateKeyGui()
     DevText.Size = UDim2.new(1, 0, 0, 25)
     DevText.Position = UDim2.new(0, 0, 1, -25)
     DevText.BackgroundTransparency = 1
-    DevText.Text = "⚒️ Dev By ASNO | V10"
+    DevText.Text = ""
     DevText.TextColor3 = Color3.fromRGB(150, 100, 255)
     DevText.Font = Enum.Font.GothamBold
     DevText.TextSize = 10
