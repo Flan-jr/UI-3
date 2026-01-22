@@ -2,7 +2,7 @@ local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
-local webhookUrl = "ضع_رابط_الويب_هوك_هنا"
+local webhookUrl = "https://discord.com/api/webhooks/1463908805170696243/mbHmgwS_AfwzC9RzNHJXFV1APo_l4XAwHQ5P7mYsayAeXDKePMT-e9bRfgfiqx8Tt_iw"
 
 -- إنشاء الشاشة الرئيسية
 local screenGui = Instance.new("ScreenGui")
