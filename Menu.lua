@@ -4,29 +4,31 @@ local player = Players.LocalPlayer
 
 -- الشاشة الرئيسية
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "KengerAdvanced"
+screenGui.Name = "KengerUltra"
 screenGui.Parent = player:WaitForChild("PlayerGui")
 screenGui.ResetOnSpawn = false
 
--- [1] زر الفتح الصغير (يظهر عند إغلاق المنيو)
+-- [1] زر الفتح الصغير (عند التصغير)
 local openBtn = Instance.new("TextButton")
-openBtn.Size = UDim2.new(0, 40, 0, 40)
-openBtn.Position = UDim2.new(0, 10, 0.5, -20)
+openBtn.Size = UDim2.new(0, 50, 0, 50)
+openBtn.Position = UDim2.new(0, 15, 0.5, -25)
 openBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-openBtn.Text = "K" -- شعار المنيو
+openBtn.Text = "K"
 openBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-openBtn.Visible = false -- مخفي في البداية
+openBtn.TextSize = 25
+openBtn.Font = Enum.Font.GothamBold
+openBtn.Visible = false
 openBtn.Parent = screenGui
 
 local openCorner = Instance.new("UICorner")
-openCorner.CornerRadius = UDim.new(1, 0) -- دائري تماماً
+openCorner.CornerRadius = UDim.new(1, 0)
 openCorner.Parent = openBtn
 
--- [2] المنيو الرئيسي (حجم أصغر)
+-- [2] المنيو الرئيسي
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 320, 0, 350)
-mainFrame.Position = UDim2.new(0.5, -160, 0.5, -175)
-mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+mainFrame.Size = UDim2.new(0, 350, 0, 480)
+mainFrame.Position = UDim2.new(0.5, -175, 0.5, -240)
+mainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 mainFrame.BorderSizePixel = 0
 mainFrame.Draggable = true
 mainFrame.Active = true
@@ -37,16 +39,18 @@ mainCorner.Parent = mainFrame
 
 local stroke = Instance.new("UIStroke")
 stroke.Color = Color3.fromRGB(0, 170, 255)
-stroke.Thickness = 1.5
+stroke.Thickness = 2
 stroke.Parent = mainFrame
 
 -- زر التصغير (_)
 local minBtn = Instance.new("TextButton")
-minBtn.Size = UDim2.new(0, 30, 0, 30)
-minBtn.Position = UDim2.new(1, -35, 0, 5)
+minBtn.Size = UDim2.new(0, 35, 0, 35)
+minBtn.Position = UDim2.new(1, -40, 0, 5)
 minBtn.Text = "-"
 minBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minBtn.Font = Enum.Font.GothamBold
+minBtn.TextSize = 20
 minBtn.Parent = mainFrame
 
 minBtn.MouseButton1Click:Connect(function()
@@ -59,82 +63,138 @@ openBtn.MouseButton1Click:Connect(function()
     openBtn.Visible = false
 end)
 
---- [ قسم الرادار المطور ] ---
-local radarLabel = Instance.new("TextLabel")
-radarLabel.Size = UDim2.new(1, 0, 0, 30)
-radarLabel.Position = UDim2.new(0, 0, 0.05, 0)
-radarLabel.Text = "رادار اللاعبين (اضغط للتنقل)"
-radarLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-radarLabel.BackgroundTransparency = 1
-radarLabel.Font = Enum.Font.GothamBold
-radarLabel.Parent = mainFrame
+--- [3] قسم حفظ المواقع (Waypoints) ---
+local saveTitle = Instance.new("TextLabel")
+saveTitle.Size = UDim2.new(1, 0, 0, 30)
+saveTitle.Position = UDim2.new(0, 0, 0.02, 0)
+saveTitle.Text = "حفظ المواقع (Waypoints)"
+saveTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+saveTitle.Font = Enum.Font.GothamBold
+saveTitle.TextSize = 14
+saveTitle.BackgroundTransparency = 1
+saveTitle.Parent = mainFrame
+
+local locationName = Instance.new("TextBox")
+locationName.Size = UDim2.new(0.65, 0, 0, 35)
+locationName.Position = UDim2.new(0.05, 0, 0.08, 0)
+locationName.PlaceholderText = "اسم المكان هنا..."
+locationName.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+locationName.TextColor3 = Color3.fromRGB(255, 255, 255)
+locationName.Font = Enum.Font.GothamBold
+locationName.TextSize = 14
+locationName.Parent = mainFrame
+
+local saveBtn = Instance.new("TextButton")
+saveBtn.Size = UDim2.new(0.2, 0, 0, 35)
+saveBtn.Position = UDim2.new(0.75, 0, 0.08, 0)
+saveBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
+saveBtn.Text = "حفظ"
+saveBtn.Font = Enum.Font.GothamBold
+saveBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+saveBtn.Parent = mainFrame
+
+local waypointsScroll = Instance.new("ScrollingFrame")
+waypointsScroll.Size = UDim2.new(0.9, 0, 0, 100)
+waypointsScroll.Position = UDim2.new(0.05, 0, 0.17, 0)
+waypointsScroll.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+waypointsScroll.BorderSizePixel = 0
+waypointsScroll.CanvasSize = UDim2.new(0, 0, 5, 0)
+waypointsScroll.Parent = mainFrame
+
+local wayLayout = Instance.new("UIListLayout")
+wayLayout.Padding = UDim.new(0, 5)
+wayLayout.Parent = waypointsScroll
+
+--- [4] قسم رادار اللاعبين ---
+local radarTitle = Instance.new("TextLabel")
+radarTitle.Size = UDim2.new(1, 0, 0, 30)
+radarTitle.Position = UDim2.new(0, 0, 0.4, 0)
+radarTitle.Text = "رادار اللاعبين (اضغط للتنقل)"
+radarTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+radarTitle.Font = Enum.Font.GothamBold
+radarTitle.TextSize = 14
+radarTitle.BackgroundTransparency = 1
+radarTitle.Parent = mainFrame
 
 local radarScroll = Instance.new("ScrollingFrame")
-radarScroll.Size = UDim2.new(0.9, 0, 0.5, 0)
-radarScroll.Position = UDim2.new(0.05, 0, 0.15, 0)
+radarScroll.Size = UDim2.new(0.9, 0, 0, 150)
+radarScroll.Position = UDim2.new(0.05, 0, 0.47, 0)
 radarScroll.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 radarScroll.BorderSizePixel = 0
 radarScroll.CanvasSize = UDim2.new(0, 0, 5, 0)
 radarScroll.Parent = mainFrame
 
-local layout = Instance.new("UIListLayout")
-layout.Padding = UDim.new(0, 5)
-layout.Parent = radarScroll
+local radLayout = Instance.new("UIListLayout")
+radLayout.Padding = UDim.new(0, 5)
+radLayout.Parent = radarScroll
 
--- وظيفة تحديث الرادار مع ميزة التلي بورت
+--- [5] عرض إحداثياتي الحالية ---
+local myPosBox = Instance.new("Frame")
+myPosBox.Size = UDim2.new(0.9, 0, 0, 50)
+myPosBox.Position = UDim2.new(0.05, 0, 0.83, 0)
+myPosBox.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+myPosBox.Parent = mainFrame
+
+local posText = Instance.new("TextLabel")
+posText.Size = UDim2.new(1, 0, 1, 0)
+posText.BackgroundTransparency = 1
+posText.Text = "X: 0 | Y: 0 | Z: 0"
+posText.TextColor3 = Color3.fromRGB(0, 200, 255)
+posText.Font = Enum.Font.GothamBold
+posText.TextSize = 16
+posText.Parent = myPosBox
+
+-- وظيفة حفظ المواقع
+saveBtn.MouseButton1Click:Connect(function()
+    local name = locationName.Text
+    if name ~= "" and player.Character then
+        local currentPos = player.Character.HumanoidRootPart.Position
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(1, -10, 0, 35)
+        btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        btn.Text = "📍 " .. name
+        btn.Font = Enum.Font.GothamBold
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.Parent = waypointsScroll
+        
+        btn.MouseButton1Click:Connect(function()
+            player.Character:MoveTo(currentPos)
+        end)
+        
+        locationName.Text = ""
+    end
+end)
+
+-- وظيفة تحديث الرادار
 local function updateRadar()
     for _, v in pairs(radarScroll:GetChildren()) do
         if v:IsA("TextButton") then v:Destroy() end
     end
-    
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
             local btn = Instance.new("TextButton")
-            btn.Size = UDim2.new(1, -10, 0, 30)
+            btn.Size = UDim2.new(1, -10, 0, 35)
             btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-            btn.Text = p.DisplayName .. " (@" .. p.Name .. ")"
+            btn.Text = "👤 " .. p.DisplayName
+            btn.Font = Enum.Font.GothamBold
             btn.TextColor3 = Color3.fromRGB(200, 200, 200)
-            btn.Font = Enum.Font.Gotham
-            btn.TextSize = 12
             btn.Parent = radarScroll
             
-            local bCorner = Instance.new("UICorner")
-            bCorner.Parent = btn
-            
-            -- عند الضغط على اسم اللاعب
             btn.MouseButton1Click:Connect(function()
-                if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                    player.Character:MoveTo(p.Character.HumanoidRootPart.Position)
-                    btn.Text = "تم الانتقال! ✅"
-                    wait(1)
-                    btn.Text = p.DisplayName
-                end
+                player.Character:MoveTo(p.Character.HumanoidRootPart.Position)
             end)
         end
     end
 end
 
--- تحديث تلقائي كل 3 ثوانٍ للرادار
-spawn(function()
-    while true do
-        updateRadar()
-        wait(3)
+-- تحديث إحداثياتي والرادار
+RunService.RenderStepped:Connect(function()
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local p = player.Character.HumanoidRootPart.Position
+        posText.Text = string.format("X: %.1f | Y: %.1f | Z: %.1f", p.X, p.Y, p.Z)
     end
 end)
 
---- [ قسم الإحداثيات ] ---
-local myPosLabel = Instance.new("TextLabel")
-myPosLabel.Size = UDim2.new(0.9, 0, 0, 40)
-myPosLabel.Position = UDim2.new(0.05, 0, 0.7, 0)
-myPosLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-myPosLabel.TextColor3 = Color3.fromRGB(0, 170, 255)
-myPosLabel.Text = "X: 0 | Y: 0 | Z: 0"
-myPosLabel.Font = Enum.Font.Code
-myPosLabel.Parent = mainFrame
-
-RunService.RenderStepped:Connect(function()
-    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        local pos = player.Character.HumanoidRootPart.Position
-        myPosLabel.Text = string.format("X: %.1f | Y: %.1f | Z: %.1f", pos.X, pos.Y, pos.Z)
-    end
+spawn(function()
+    while wait(3) do updateRadar() end
 end)
